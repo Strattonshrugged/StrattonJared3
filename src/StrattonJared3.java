@@ -123,48 +123,40 @@ public class StrattonJared3 {
         if (income < 3000)   {
             System.out.println("Sorry, value outside currently acceptable range");
         }   else    {
-
             if (income > 415050)    {
                 rate = 39.6;
                 margin = income - 415050;
-                tax = margin * (rate / 100);
-                tax = roundCents(tax);
+                tax = roundCents(margin * (rate / 100));
             }
             if (income > 413350)    {
                 rate = 35.0;
                 margin = income - 413350;
-                tax = margin * (rate / 100);
-                tax = roundCents(tax);
+                tax = roundCents(margin * (rate / 100));
             }
             if (income > 190150)    {
                 rate = 33.0;
                 margin = income - 190150;
-                tax = margin * (rate / 100);
-                tax = roundCents(tax);
+                tax = roundCents(margin * (rate / 100));
             }
             if (income > 100150)    {
                 rate = 28.0;
                 margin = income - 100150;
-                tax = margin * (rate / 100);
-                tax = roundCents(tax);
+                tax = roundCents(margin * (rate / 100));
             }
             if (income > 37650)    {
                 rate = 25.0;
                 margin = income - 37650;
-                tax = margin * (rate / 100);
-                tax = roundCents(tax);
+                tax = roundCents(margin * (rate / 100));
             }
             if (income > 9275)    {
                 rate = 15.0;
                 margin = income - 9275;
-                tax = margin * (rate / 100);
-                tax = roundCents(tax);
+                tax = roundCents(margin * (rate / 100));
             }
             if (income > 0)    {
                 rate = 10.0;
                 margin = income;
-                tax = margin * (rate / 100);
-                tax = roundCents(tax);
+                tax = roundCents(margin * (rate / 100));
             }
             // personal exemption
             System.out.printf("Pre-deduction tax is $%.2f", tax);
@@ -293,7 +285,8 @@ public class StrattonJared3 {
         if (time.charAt(8) == 'P')  {
             hours = hours + 12;
         }
-        System.out.println(hours + " hours " + minutes + " minutes " + seconds + " seconds ");
+        //breakdown for testing, or if desired in results
+        //System.out.println(hours + " hours " + minutes + " minutes " + seconds + " seconds ");
         totalSeconds = (hours * 3600) + (minutes * 60) + (seconds);
         return totalSeconds;
     }
