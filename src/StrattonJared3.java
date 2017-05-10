@@ -1,10 +1,6 @@
 /**
  * Created by jared stratton on 4/30/17.
- * parts to program ...
- *      quadrant: takes two doubles, return int--quadrant of point
- *      singleTax: takes double (taxable income) returns tax for single filing status
- *      seconds after midnight: counts seconds since
- *      seconds difference:
+ *      deficiency: calculations to determine tax tables are inaccurate
  */
 
 import java.util.*;
@@ -12,120 +8,97 @@ import java.util.*;
 public class StrattonJared3 {
     public static Scanner console = new Scanner(System.in);
 
-    public static void main(String[] args) {
-        int selection;
+    public static void main(String args[]) {
+        greeting();
 
-        while (true) {
-            // say howdy, give options
-            greeting();
-            // pick option, should return int 1,2,3,or4
-            selection = selectionMaker();
-            // route to task
-            if (selection == 1) {
-                quadrantFinder();
-            } else if (selection == 2) {
-                // taxFinder();
-            } else if (selection == 3) {
-                timeFinder(1);
-            } else if (selection == 4) {
-                timeFinder(2);
-            } else  {
-                System.out.println("Error: selection has invalid value");
+        while (true)    {
+            String input = "";
+            int longy = 0;
+            double doubleOne = 0.0;
+            double doubleTwo = 0.0;
+
+            // declare ready status and take input from user
+            System.out.printf("READY\n");
+            input = console.nextLine();
+            // basic conditioning (case insensitive, no double spaces, trimmed)
+            input = input.toUpperCase();
+            input = input.replace("  "," ");
+            input = input.trim();
+
+            // sift through responses
+            if (input.equals(""))   {
+                System.out.println("Error: Need some input here");
+            }   else if (input.charAt(0) == '$') {
+                // assume intended for taxfinder
+                input = input.replace("$","");
+                input = input.replace(",","");
+                try     {
+                    doubleOne = Double.parseDouble(input);
+                    taxFinder(doubleOne);
+                }
+                catch (NumberFormatException dollaz)   {
+                    System.out.println("Error, please check formatting");
+                }
+            }   else if (input.charAt(0) == '(')    {
+                // assume intended QuadrantFinder
+                input = input.replace("(","");
+                input = input.replace(")","");
+                try     {
+                    String [] pieces = input.split(",");
+                    longy = pieces.length;
+                    if (longy == 2)  {
+                        doubleOne = Double.parseDouble(pieces[0]);
+                        doubleTwo = Double.parseDouble(pieces[1]);
+                        quadrant(doubleOne,doubleTwo);
+                    }   else    {
+                        System.out.println("Error, please check formatting");
+                    }
+
+                }
+                catch (NumberFormatException coordinates)   {
+                    System.out.println("Error, please check formatting");
+                }
+            }   else    {
+                // assume intended for secondsAfterMidnight OR secondsDifference
+                try     {
+                    String [] pieces = input.split(" ");
+                    longy = pieces.length;
+                    if (longy == 1)    {
+                        secondsAfterMidnight(pieces[0]);
+                    }   else if (longy == 2)    {
+                        secondsDifference(pieces[0],pieces[1]);
+                    }   else    {
+                        System.out.println("Error, please check formatting");
+                    }
+                }
+                catch (NumberFormatException stringzees)     {
+                    System.out.println("Error, please check formatting");
+                }
             }
-            // flush out the console for safety sake
-            console.nextLine();
-            // couple lines of whitespace between iterations
-            System.out.println();
-            System.out.println();
-        } // end of while loop
-    } // end of main method
+            //spacer
+            System.out.println("");
+        }   // end of while loop
+    }   // end of main
 
 
-    // just prints text
     public static void greeting()       {
         System.out.println("Program Three Online: Quadrant Finder, Tax Return Calculator, and Seconds Counter");
-        System.out.println("For Quadrant Finder, enter '1'");
-        System.out.println("For Tax Finder, enter '2'");
-        System.out.println("For Seconds Past Midnight, enter '3'");
-        System.out.println("For Seconds Difference, enter '4'");
+        System.out.println("For Quadrant Finder, use the (1,1) format");
+        System.out.println("For Tax Finder, enter taxable income in $1111.11 format");
+        System.out.println("For Seconds After Midnight, use the HH:MM:SSPM format");
+        System.out.println("For Seconds Difference, use the HH:MM:SSPM HH:MM:SSPM format");
         System.out.println("");
     }
 
 
-    // takes selection, announces it, directs main where to send user
-    public static int selectionMaker()      {
-        String selMakerInput;
-        int selTemp = 0;
-        int response = 0;
-
-        while (response == 0) {
-            System.out.print("Please make your selection: ");
-            selMakerInput = console.nextLine();
-            try {
-                selTemp = Integer.parseInt(selMakerInput);
-            }
-            catch (NumberFormatException e)    {
-            }
-            if (selTemp == 1) {
-                System.out.println("You have selected Quadrant Finder");
-                response = 1;
-            } else if (selTemp == 2) {
-                System.out.println("You have selected Tax Finder");
-                response = 2;
-            } else if (selTemp == 3) {
-                System.out.println("You have selected Seconds Past Midnight");
-                response = 3;
-            } else if (selTemp == 4) {
-                System.out.println("You have selected Seconds Difference");
-                response = 4;
-            } else {
-                System.out.println("Error: Invalid Selection");
-            }
-        } // end of while loop
-        return response;
-    } // end of selectionMaker
-
-
-    // method is to organize inputs and calls outside of main
-    public static void quadrantFinder() {
-        double x;
-        double y;
-        // get x
-        x = doubleValueFinder('x');
-        // get y
-        y = doubleValueFinder('y');
-        // call method
-        quadrant(x,y);
-    }
-
-
-    // takes accepts values for x and y coordinates, validates them
-    public static double doubleValueFinder(char letter)   {
-        Double k = null;
-        String input;
-
-        while (k == null)   {
-            System.out.println("Please enter the " + letter + "-value for the point");
-            try {
-                k= console.nextDouble();
-            }
-            catch (InputMismatchException doubleTrouble)   {
-                console.nextLine();
-                System.out.println("Invalid value");
-            }
-        }
-        return k;
-    }
-
-
-    // takes validated doubles, prints their location
-    public static void quadrant(double x, double y)    {
+    public static void quadrant (double x, double y)    {
+        System.out.println("quadrant received x of " + x + " and y of " + y);
         if (x == 0.0 && y == 0.0) {
             System.out.println("(0.0,0.0) is the origin, it is not in any quadrant");
         }   else if (x == 0.0)  {
-            System.out.println("Points on the x-axis are not in any quadrant");
-        }   else if (y == 0.0)  {
             System.out.println("Points on the y-axis are not in any quadrant");
+        }   else if (y == 0.0)  {
+            System.out.println("Points on the x-axis are not in any quadrant");
         }   else if (x > 0 && y > 0)  {
             System.out.println("Quadrant One");
         }   else if (x < 0 && y > 0)  {
@@ -140,79 +113,113 @@ public class StrattonJared3 {
     }
 
 
-    // method is to organize inputs and calls outside of main
-    public static void timeFinder(int count) {
-        String tOne;
-        String tTwo;
-        int seconds;
+    public static void taxFinder (double income)    {
+        double margin;
+        double rate;
+        double tax = 0;
+        // round to whole dollars
+        income = Math.round(income * 100.0) / 100.0;
+        System.out.printf("taxFinder received $%.2f\n",income);
+        if (income < 3000)   {
+            System.out.println("Sorry, value outside currently acceptable range");
+        }   else    {
 
-        if (count == 1) {
-            System.out.println("Please enter the time to be calculated past midnight");
-            System.out.println("Remember to use the 'HH:MM:SSPM' format");
-            tTwo = console.nextLine();
-            tTwo = tTwo.toUpperCase();
-            seconds = secondsPastMidnight(tTwo);
-            System.out.println(seconds);
-        } else if (count == 2) {
-            System.out.println("Remember to use the 'HH:MM:SSPM' format");
-            System.out.println("Please enter the start time to be calculated");
-            tOne = console.nextLine();
-            tOne = tOne.toUpperCase();
-            System.out.println("Please enter the end time");
-            tTwo = console.nextLine();
-            tTwo = tTwo.toUpperCase();
-            seconds = secondsDifference(tOne,tTwo);
-            System.out.println(seconds);
-        } else {
-            System.out.println("Error: timeStringMaker received bad count");
-        }
-
-    } // end of timeStringMaker
-
-
-    // required method accepting string and returning -1 on error
-    public static int secondsPastMidnight(String secondsPast)    {
-        int timeValue;
-
-        // check the string
-        if (timeVerifier(secondsPast) == false)     {
-            return -1;
-        }
-        //System.out.println("Came back from timeVerifier");
-        // perform calculation
-        timeValue = (secondCounter(secondsPast)) - 43200;
-        return timeValue;
+            if (income > 415050)    {
+                rate = 39.6;
+                margin = income - 415050;
+                tax = margin * (rate / 100);
+                tax = roundCents(tax);
+            }
+            if (income > 413350)    {
+                rate = 35.0;
+                margin = income - 413350;
+                tax = margin * (rate / 100);
+                tax = roundCents(tax);
+            }
+            if (income > 190150)    {
+                rate = 33.0;
+                margin = income - 190150;
+                tax = margin * (rate / 100);
+                tax = roundCents(tax);
+            }
+            if (income > 100150)    {
+                rate = 28.0;
+                margin = income - 100150;
+                tax = margin * (rate / 100);
+                tax = roundCents(tax);
+            }
+            if (income > 37650)    {
+                rate = 25.0;
+                margin = income - 37650;
+                tax = margin * (rate / 100);
+                tax = roundCents(tax);
+            }
+            if (income > 9275)    {
+                rate = 15.0;
+                margin = income - 9275;
+                tax = margin * (rate / 100);
+                tax = roundCents(tax);
+            }
+            if (income > 0)    {
+                rate = 10.0;
+                margin = income;
+                tax = margin * (rate / 100);
+                tax = roundCents(tax);
+            }
+            // personal exemption
+            System.out.printf("Pre-deduction tax is $%.2f", tax);
+            //tax = tax - 6300;
+            //System.out.printf("Calculated tax is $%.2f", tax);
+        }   // end of else avoiding income out of range
     }
 
 
-    // required method accepting two strings and returning -99999 on error
-    public static int secondsDifference(String startTime,String stopTime)    {
-        int timeInValue;
-        int timeOutValue;
-        int difference;
+    public static double roundCents (double money)    {
+        money = Math.round(money * 100.0) / 100.0;
+        return money;
+    }
 
-        System.out.println("secondsDifference initiated");
+    public static void secondsAfterMidnight (String timeIndex)  {
+        int seconds;
+        System.out.println("secondsAfterMidnight received " + timeIndex);
+        // account for possibility of 9-digit format
+        if (timeIndex.length() == 9)    {
+            timeIndex = '0' + timeIndex;
+        }
+        if (timeVerifier(timeIndex) != true)    {
+            System.out.println("-1");
+        }   else    {
+            seconds = secondCounter(timeIndex);
+            System.out.println(seconds + " seconds after midnight");
+        }
+    }
 
-        if (timeVerifier(startTime) == false)   {
-            return -99999;
+
+    public static void secondsDifference (String timeStart, String timeStop)    {
+        int start;
+        int stop;
+        int diff;
+        System.out.println("secondsDifference received " + timeStart + " and " + timeStop);
+        // account for possibility of 9-digit formats
+        if (timeStart.length() == 9)    {
+            timeStart = '0' + timeStart;
         }
-        if (timeVerifier(stopTime) == false)    {
-            return -99999;
+        if (timeStop.length() == 9)    {
+            timeStop = '0' + timeStop;
         }
-        timeInValue = secondCounter(startTime);
-        timeOutValue = secondCounter(stopTime);
-        difference = timeOutValue - timeInValue;
-        return difference;
+        if (timeVerifier(timeStart) != true || timeVerifier(timeStop) != true) {
+            System.out.println("-99999");
+        }   else    {
+            start = secondCounter(timeStart);
+            stop = secondCounter(timeStop);
+            diff = stop - start;
+            System.out.println(diff + " seconds difference");
+        }
     }
 
 
     // check strings of time for format, regex would be used here
     public static boolean timeVerifier(String time)  {
-        // if string length is 9, assume they left off the zero
-        if (time.length() == 9) {
-            time = '0' + time;
-            System.out.println(time);
-        }
         // check string length
         if (time.length() != 10)    {
             return false;
@@ -265,33 +272,30 @@ public class StrattonJared3 {
     }
 
 
-    // adds up total number of seconds in a time string
     public static int secondCounter(String time)    {
         String snippet;
-        int halfDay;
         int hours;
         int minutes;
         int seconds;
         int totalSeconds;
 
-        if (time.charAt(8) == 'P')  {
-            System.out.println("PM noted");
-            halfDay = 1;
-        }   else    {
-            halfDay = 0;
-            System.out.println("AM noted");
-        }
         snippet = time.substring(0,2);
         hours = Integer.parseInt(snippet);
         snippet = time.substring(3,5);
         minutes = Integer.parseInt(snippet);
         snippet = time.substring(6,8);
         seconds = Integer.parseInt(snippet);
-        System.out.println(" hours " + hours + " minutes " + minutes + " seconds " + seconds);
-        totalSeconds = (halfDay * 43200) + (hours * 3600) + (minutes * 60) + (seconds);
+        // account for time being inside the first hour
+        if (hours == 12)    {
+            hours = hours - 12;
+        }
+        // account for post meridian
+        if (time.charAt(8) == 'P')  {
+            hours = hours + 12;
+        }
+        System.out.println(hours + " hours " + minutes + " minutes " + seconds + " seconds ");
+        totalSeconds = (hours * 3600) + (minutes * 60) + (seconds);
         return totalSeconds;
     }
-
-
 
 } // end of StrattonJared3 class
